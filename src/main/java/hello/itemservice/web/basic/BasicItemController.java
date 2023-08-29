@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -36,10 +37,11 @@ public class BasicItemController {
     };
 
     @PostMapping("/add")
-    public String save(@ModelAttribute Item item) { // @ModelAttribute 생략 가능
-        itemRepository.save(item);
-        //model.addAtribute("item", item); // 자동 추가, 생략 가능
-        return "basic/item";
+    public String save(@ModelAttribute Item item, RedirectAttributes redirectAttributes) { // @ModelAttribute 생략 가능
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/basic/items/{itemId}";
     };
 
     @GetMapping("/{itemId}/edit")
